@@ -23,6 +23,8 @@
 
 		/* Kästchengröße des Karopapiers; eine Aufgabe ist zwei Kästchen hoch */
 		--sq: 22px;
+		/* Höhe einer Aufgabenzeile */
+		--row: calc(var(--sq) * 2);
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -369,7 +371,7 @@
 		font-family: var(--font-hand);
 		font-weight: 400;
 		font-size: 2.3rem;
-		line-height: calc(var(--sq) * 2);
+		line-height: var(--row);
 		color: var(--pen);
 		text-wrap: balance;
 	}
@@ -378,7 +380,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0 32px;
-		line-height: calc(var(--sq) * 2);
+		line-height: var(--row);
 		margin-bottom: var(--sq);
 		color: var(--ink-soft);
 	}
@@ -414,7 +416,7 @@
 	}
 
 	.task > span {
-		line-height: calc(var(--sq) * 2);
+		line-height: var(--row);
 		white-space: nowrap;
 	}
 
@@ -448,7 +450,7 @@
 
 	.sheet-foot {
 		margin-top: var(--sq);
-		line-height: calc(var(--sq) * 2);
+		line-height: var(--row);
 		color: var(--ink-soft);
 	}
 
@@ -466,11 +468,14 @@
 			--ink-soft: #444444;
 			--pen: #000000;
 			--red: #c9372c;
+			/* 20 Zeilen à 11 mm plus Kopf und Fuß passen auf eine A4-Seite */
+			--row: 11mm;
 			color-scheme: light;
 		}
 
 		@page {
-			margin: 15mm;
+			size: A4;
+			margin: 12mm;
 		}
 
 		body {
@@ -496,6 +501,29 @@
 
 		.sheet::before {
 			display: none;
+		}
+
+		.sheet h1 {
+			font-size: 22pt;
+		}
+
+		.tasks {
+			flex-wrap: nowrap;
+			column-gap: 20mm;
+			break-inside: avoid;
+		}
+
+		.tasks.three {
+			justify-content: space-between;
+			column-gap: 6mm;
+		}
+
+		.col {
+			font-size: 16pt;
+		}
+
+		.tasks.three .col {
+			font-size: 14pt;
 		}
 	}
 </style>

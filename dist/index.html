@@ -28,6 +28,8 @@
 
 		/* Kästchengröße des Karopapiers; eine Aufgabe ist zwei Kästchen hoch */
 		--sq: 22px;
+		/* Höhe einer Aufgabenzeile */
+		--row: calc(var(--sq) * 2);
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -374,7 +376,7 @@
 		font-family: var(--font-hand);
 		font-weight: 400;
 		font-size: 2.3rem;
-		line-height: calc(var(--sq) * 2);
+		line-height: var(--row);
 		color: var(--pen);
 		text-wrap: balance;
 	}
@@ -383,7 +385,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0 32px;
-		line-height: calc(var(--sq) * 2);
+		line-height: var(--row);
 		margin-bottom: var(--sq);
 		color: var(--ink-soft);
 	}
@@ -419,7 +421,7 @@
 	}
 
 	.task > span {
-		line-height: calc(var(--sq) * 2);
+		line-height: var(--row);
 		white-space: nowrap;
 	}
 
@@ -453,7 +455,7 @@
 
 	.sheet-foot {
 		margin-top: var(--sq);
-		line-height: calc(var(--sq) * 2);
+		line-height: var(--row);
 		color: var(--ink-soft);
 	}
 
@@ -471,11 +473,14 @@
 			--ink-soft: #444444;
 			--pen: #000000;
 			--red: #c9372c;
+			/* 20 Zeilen à 11 mm plus Kopf und Fuß passen auf eine A4-Seite */
+			--row: 11mm;
 			color-scheme: light;
 		}
 
 		@page {
-			margin: 15mm;
+			size: A4;
+			margin: 12mm;
 		}
 
 		body {
@@ -501,6 +506,29 @@
 
 		.sheet::before {
 			display: none;
+		}
+
+		.sheet h1 {
+			font-size: 22pt;
+		}
+
+		.tasks {
+			flex-wrap: nowrap;
+			column-gap: 20mm;
+			break-inside: avoid;
+		}
+
+		.tasks.three {
+			justify-content: space-between;
+			column-gap: 6mm;
+		}
+
+		.col {
+			font-size: 16pt;
+		}
+
+		.tasks.three .col {
+			font-size: 14pt;
 		}
 	}
 </style>
@@ -973,13 +1001,16 @@ function renderTask(task      , showSolutions         )                 {
 }
 
 function render(tasks                 , s          )       {
-	const half = Math.ceil(tasks.length / 2);
-	const columns = [tasks.slice(0, half), tasks.slice(half)].map((part) => {
+	// höchstens 20 Zeilen pro Spalte, damit das Blatt auf eine A4-Seite passt
+	const perColumn = Math.ceil(tasks.length / Math.max(2, Math.ceil(tasks.length / 20)));
+	const columns                   = [];
+	for (let i = 0; i < tasks.length; i += perColumn) {
 		const col = el("div", "col");
-		col.append(...part.map((t) => renderTask(t, s.showSolutions)));
-		return col;
-	});
+		col.append(...tasks.slice(i, i + perColumn).map((t) => renderTask(t, s.showSolutions)));
+		columns.push(col);
+	}
 	tasksBox.replaceChildren(...columns);
+	tasksBox.classList.toggle("three", columns.length > 2);
 
 	byId("sheetName", HTMLSpanElement).textContent = s.name;
 	byId("sheetInfo", HTMLSpanElement).textContent =

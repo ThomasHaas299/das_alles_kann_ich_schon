@@ -380,13 +380,16 @@ function renderTask(task: Task, showSolutions: boolean): HTMLDivElement {
 }
 
 function render(tasks: readonly Task[], s: Settings): void {
-	const half = Math.ceil(tasks.length / 2);
-	const columns = [tasks.slice(0, half), tasks.slice(half)].map((part) => {
+	// höchstens 20 Zeilen pro Spalte, damit das Blatt auf eine A4-Seite passt
+	const perColumn = Math.ceil(tasks.length / Math.max(2, Math.ceil(tasks.length / 20)));
+	const columns: HTMLDivElement[] = [];
+	for (let i = 0; i < tasks.length; i += perColumn) {
 		const col = el("div", "col");
-		col.append(...part.map((t) => renderTask(t, s.showSolutions)));
-		return col;
-	});
+		col.append(...tasks.slice(i, i + perColumn).map((t) => renderTask(t, s.showSolutions)));
+		columns.push(col);
+	}
 	tasksBox.replaceChildren(...columns);
+	tasksBox.classList.toggle("three", columns.length > 2);
 
 	byId("sheetName", HTMLSpanElement).textContent = s.name;
 	byId("sheetInfo", HTMLSpanElement).textContent =
