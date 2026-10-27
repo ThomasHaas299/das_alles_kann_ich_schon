@@ -1,0 +1,1049 @@
+<title>Das alles kann ich schon</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&family=Gochi+Hand&display=swap">
+<style>
+	/* Layout: links schmale Einstellungs-Spalte, rechts das Rechenblatt auf Karopapier mit rotem Rand; schmal untereinander. */
+	:root {
+		--bg: #e8ecf1;
+		--paper: #ffffff;
+		--grid: #d4e0ec;
+		--ink: #1c2530;
+		--ink-soft: #5a6777;
+		--line: #c4cedb;
+		--panel: #f6f8fb;
+		--pen: #2347b0;
+		--pen-ink: #ffffff;
+		--red: #c9372c;
+		--shadow: rgb(20 40 70 / 0.10);
+
+		--font-hand: "Gochi Hand", "Comic Sans MS", cursive;
+		--font-sheet: "Andika", "Trebuchet MS", sans-serif;
+		--font-ui: "Atkinson Hyperlegible", system-ui, sans-serif;
+
+		/* Kästchengröße des Karopapiers; eine Aufgabe ist zwei Kästchen hoch */
+		--sq: 22px;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root:not([data-theme="light"]) {
+			--bg: #0f141a;
+			--paper: #18202a;
+			--grid: #243040;
+			--ink: #e4ebf3;
+			--ink-soft: #95a2b2;
+			--line: #2d3a4a;
+			--panel: #151c25;
+			--pen: #9db3ff;
+			--pen-ink: #0d1530;
+			--red: #ff7b6f;
+			--shadow: rgb(0 0 0 / 0.40);
+			color-scheme: dark;
+		}
+	}
+
+	:root[data-theme="dark"] {
+		--bg: #0f141a;
+		--paper: #18202a;
+		--grid: #243040;
+		--ink: #e4ebf3;
+		--ink-soft: #95a2b2;
+		--line: #2d3a4a;
+		--panel: #151c25;
+		--pen: #9db3ff;
+		--pen-ink: #0d1530;
+		--red: #ff7b6f;
+		--shadow: rgb(0 0 0 / 0.40);
+		color-scheme: dark;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	body {
+		margin: 0;
+		background: var(--bg);
+		color: var(--ink);
+		font-family: var(--font-ui);
+		font-size: 15px;
+		line-height: 1.45;
+	}
+
+	.app {
+		display: grid;
+		grid-template-columns: minmax(0, 330px) minmax(0, 1fr);
+		gap: 28px;
+		align-items: start;
+		max-width: 1180px;
+		margin: 0 auto;
+		padding-block: 24px 48px;
+		padding-left: max(16px, env(safe-area-inset-left, 0px));
+		padding-right: max(16px, env(safe-area-inset-right, 0px));
+	}
+
+	@media (max-width: 860px) {
+		.app {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	/* ---------- Einstellungen */
+
+	.panel {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		background: var(--panel);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 20px;
+		position: sticky;
+		top: calc(env(safe-area-inset-top, 0px) + 16px);
+	}
+
+	@media (max-width: 860px) {
+		.panel {
+			position: static;
+		}
+	}
+
+	.panel h2 {
+		margin: 0;
+		font-size: 1.05rem;
+		text-wrap: balance;
+	}
+
+	fieldset {
+		border: 0;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	legend,
+	.legend {
+		padding: 0;
+		margin-bottom: 8px;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.chip {
+		position: relative;
+		cursor: pointer;
+	}
+
+	.chip input {
+		position: absolute;
+		opacity: 0;
+		inset: 0;
+		margin: 0;
+		cursor: pointer;
+	}
+
+	.chip span {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		min-height: 34px;
+		padding: 4px 12px;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: var(--paper);
+		color: var(--ink);
+		font-variant-numeric: tabular-nums;
+		user-select: none;
+	}
+
+	.chip-small span {
+		min-width: 38px;
+		justify-content: center;
+		padding: 4px 6px;
+	}
+
+	.chip span b {
+		font-family: var(--font-sheet);
+		font-size: 1.1rem;
+		line-height: 1;
+	}
+
+	.chip input:checked + span {
+		background: var(--pen);
+		border-color: var(--pen);
+		color: var(--pen-ink);
+	}
+
+	.chip input:focus-visible + span,
+	.btn:focus-visible,
+	.field input:focus-visible,
+	.check input:focus-visible {
+		outline: 3px solid var(--pen);
+		outline-offset: 2px;
+	}
+
+	.range {
+		display: grid;
+		grid-template-columns: auto auto auto auto;
+		align-items: center;
+		justify-content: start;
+		gap: 6px 8px;
+	}
+
+	.range span {
+		color: var(--ink-soft);
+	}
+
+	.range .label {
+		grid-column: 1 / -1;
+		color: var(--ink);
+	}
+
+	.field input,
+	.range input {
+		font: inherit;
+		font-variant-numeric: tabular-nums;
+		color: var(--ink);
+		background: var(--paper);
+		border: 1px solid var(--line);
+		border-radius: 6px;
+		padding: 5px 8px;
+	}
+
+	.range input {
+		width: 6.5em;
+	}
+
+	.range input:focus-visible {
+		outline: 3px solid var(--pen);
+		outline-offset: 1px;
+	}
+
+	.field {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.field input {
+		width: 100%;
+	}
+
+	.check {
+		display: flex;
+		gap: 10px;
+		align-items: flex-start;
+		cursor: pointer;
+	}
+
+	.check input {
+		accent-color: var(--pen);
+		width: 18px;
+		height: 18px;
+		margin: 1px 0 0;
+		flex: none;
+	}
+
+	.check small {
+		display: block;
+		color: var(--ink-soft);
+	}
+
+	.hint {
+		margin: 0;
+		color: var(--ink-soft);
+		font-size: 0.85rem;
+	}
+
+	.message {
+		margin: 0;
+		padding: 10px 12px;
+		border-radius: 8px;
+		border: 1px solid var(--red);
+		color: var(--red);
+		font-weight: 700;
+	}
+
+	/* ---------- Werkzeugleiste und Knöpfe */
+
+	.main {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		min-width: 0;
+	}
+
+	.toolbar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px 16px;
+	}
+
+	.toolbar .spacer {
+		flex: 1;
+	}
+
+	.btn {
+		font: inherit;
+		font-weight: 700;
+		cursor: pointer;
+		border-radius: 8px;
+		padding: 9px 16px;
+		border: 1px solid var(--line);
+		background: var(--paper);
+		color: var(--ink);
+	}
+
+	.btn:hover {
+		border-color: var(--pen);
+	}
+
+	.btn-primary {
+		background: var(--pen);
+		border-color: var(--pen);
+		color: var(--pen-ink);
+	}
+
+	.btn-quiet {
+		align-self: flex-start;
+		font-weight: 400;
+		padding: 6px 12px;
+		background: transparent;
+	}
+
+	/* ---------- Rechenblatt */
+
+	.sheet {
+		position: relative;
+		min-width: 0;
+		background-color: var(--paper);
+		background-image:
+			linear-gradient(var(--grid) 1px, transparent 1px),
+			linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+		background-size: var(--sq) var(--sq);
+		background-position: -1px -1px;
+		border-radius: 3px;
+		box-shadow: 0 1px 2px var(--shadow), 0 10px 30px var(--shadow);
+		padding: calc(var(--sq) * 2) calc(var(--sq) * 2) calc(var(--sq) * 2) calc(var(--sq) * 5);
+		font-family: var(--font-sheet);
+		color: var(--ink);
+	}
+
+	/* roter Heftrand */
+	.sheet::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: calc(var(--sq) * 3);
+		width: 2px;
+		background: var(--red);
+		opacity: 0.6;
+	}
+
+	@media (max-width: 520px) {
+		.sheet {
+			padding: var(--sq) var(--sq) var(--sq) calc(var(--sq) * 3);
+		}
+
+		.sheet::before {
+			left: calc(var(--sq) * 2);
+		}
+	}
+
+	.sheet h1 {
+		margin: 0;
+		font-family: var(--font-hand);
+		font-weight: 400;
+		font-size: 2.3rem;
+		line-height: calc(var(--sq) * 2);
+		color: var(--pen);
+		text-wrap: balance;
+	}
+
+	.sheet-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 32px;
+		line-height: calc(var(--sq) * 2);
+		margin-bottom: var(--sq);
+		color: var(--ink-soft);
+	}
+
+	.sheet-meta .write {
+		display: inline-block;
+		min-width: 9em;
+		border-bottom: 1.5px solid var(--ink-soft);
+		line-height: 1.3;
+		font-family: var(--font-hand);
+		font-size: 1.5rem;
+		color: var(--pen);
+		padding-left: 4px;
+	}
+
+	.tasks {
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: calc(var(--sq) * 4);
+	}
+
+	.col {
+		display: grid;
+		grid-template-columns: repeat(5, auto);
+		column-gap: 0.35em;
+		justify-content: start;
+		font-size: 1.45rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.task {
+		display: contents;
+	}
+
+	.task > span {
+		line-height: calc(var(--sq) * 2);
+		white-space: nowrap;
+	}
+
+	.num {
+		text-align: right;
+	}
+
+	.op {
+		text-align: center;
+		min-width: 1em;
+		font-weight: 700;
+	}
+
+	.blank {
+		display: inline-block;
+		min-width: 2.8em;
+		border-bottom: 2px solid var(--ink-soft);
+		line-height: 1.25;
+		text-align: center;
+		vertical-align: baseline;
+	}
+
+	.blank:empty::before {
+		content: "\00a0";
+	}
+
+	.solution {
+		font-family: var(--font-hand);
+		color: var(--red);
+	}
+
+	.sheet-foot {
+		margin-top: var(--sq);
+		line-height: calc(var(--sq) * 2);
+		color: var(--ink-soft);
+	}
+
+	.sheet-foot .write {
+		display: inline-block;
+		min-width: 3em;
+		border-bottom: 1.5px solid var(--ink-soft);
+		line-height: 1.3;
+	}
+
+	@media print {
+		:root:not(#print) {
+			--paper: #ffffff;
+			--ink: #000000;
+			--ink-soft: #444444;
+			--pen: #000000;
+			--red: #c9372c;
+			color-scheme: light;
+		}
+
+		@page {
+			margin: 15mm;
+		}
+
+		body {
+			background: #ffffff;
+		}
+
+		.panel,
+		.toolbar {
+			display: none !important;
+		}
+
+		.app {
+			display: block;
+			padding: 0;
+			max-width: none;
+		}
+
+		.sheet {
+			box-shadow: none;
+			background-image: none;
+			padding: 0;
+		}
+
+		.sheet::before {
+			display: none;
+		}
+	}
+</style>
+
+<div class="app">
+	<form class="panel" id="settings" novalidate>
+		<h2>Aufgaben einstellen</h2>
+
+		<fieldset id="fsType">
+			<legend>Rechenarten</legend>
+			<div class="chips">
+				<label class="chip"><input type="checkbox" name="type" value="add" id="typeAdd"><span><b>+</b> Plus</span></label>
+				<label class="chip"><input type="checkbox" name="type" value="sub" id="typeSub"><span><b>–</b> Minus</span></label>
+				<label class="chip"><input type="checkbox" name="type" value="tim" id="typeTim"><span><b>·</b> Mal</span></label>
+				<label class="chip"><input type="checkbox" name="type" value="div" id="typeDiv"><span><b>:</b> Geteilt</span></label>
+			</div>
+		</fieldset>
+
+		<fieldset id="fsAddSub">
+			<legend>Plus und Minus</legend>
+			<div class="range">
+				<span class="label">Größte Zahl der Aufgabe</span>
+				<span>von</span><input type="number" id="minResult" inputmode="numeric" min="0">
+				<span>bis</span><input type="number" id="maxResult" inputmode="numeric" min="1">
+			</div>
+			<div class="range">
+				<span class="label">Zweite Zahl</span>
+				<span>von</span><input type="number" id="minCalc" inputmode="numeric" min="0">
+				<span>bis</span><input type="number" id="maxCalc" inputmode="numeric" min="1">
+			</div>
+			<p class="hint">Beispiel 20–100 und 4–17: 63 + 15 = ___ oder 82 – 9 = ___</p>
+		</fieldset>
+
+		<fieldset id="fsTimDiv">
+			<legend>Mal und Geteilt: Reihen</legend>
+			<div class="chips" id="rows"></div>
+			<label class="range">
+				<span class="label">Anderer Faktor bis</span>
+				<input type="number" id="maxFactor" inputmode="numeric" min="1" max="100">
+			</label>
+		</fieldset>
+
+		<fieldset>
+			<legend>Optionen</legend>
+			<label class="check"><input type="checkbox" id="mix"><span>Rechenarten mischen<small>sonst stehen sie der Reihe nach</small></span></label>
+			<label class="check"><input type="checkbox" id="complement"><span>Ergänzungsaufgaben<small>die Lücke steht auch vorne oder in der Mitte</small></span></label>
+			<label class="check"><input type="checkbox" id="commutative"><span>Tauschaufgaben<small>die beiden Zahlen werden zufällig vertauscht</small></span></label>
+		</fieldset>
+
+		<fieldset>
+			<legend>Anzahl</legend>
+			<div class="chips">
+				<label class="chip"><input type="radio" name="count" value="20" id="count20"><span>20</span></label>
+				<label class="chip"><input type="radio" name="count" value="40" id="count40"><span>40</span></label>
+				<label class="chip"><input type="radio" name="count" value="60" id="count60"><span>60</span></label>
+			</div>
+		</fieldset>
+
+		<label class="field">
+			<span class="legend">Name auf dem Blatt</span>
+			<input type="text" id="name" maxlength="40" autocomplete="off" placeholder="leer lassen zum Selbstschreiben">
+		</label>
+
+		<p class="message" id="message" role="status" hidden></p>
+
+		<button type="button" class="btn btn-quiet" id="btnDefaults">Standard laden</button>
+	</form>
+
+	<div class="main">
+		<div class="toolbar">
+			<button type="button" class="btn btn-primary" id="btnNew">Neue Aufgaben</button>
+			<label class="check"><input type="checkbox" id="showSolutions"><span>Lösungen zeigen</span></label>
+			<span class="spacer"></span>
+			<button type="button" class="btn" id="btnPrint">Drucken</button>
+		</div>
+
+		<main class="sheet" aria-label="Rechenblatt">
+			<h1>Das alles kann ich schon</h1>
+			<div class="sheet-meta">
+				<span>Name: <span class="write" id="sheetName"></span></span>
+				<span id="sheetInfo"></span>
+			</div>
+			<div class="tasks" id="tasks"></div>
+			<div class="sheet-foot">Richtig: <span class="write"></span> von <span id="scoreTotal"></span></div>
+		</main>
+	</div>
+</div>
+<script>
+// Rechenblatt-Generator: erzeugt Plus-, Minus-, Mal- und Geteilt-Aufgaben zum Ausdrucken.
+// Einstellungen werden pro Gerät im localStorage gemerkt.
+
+const OPS = ["add", "sub", "tim", "div"]         ;
+                               
+
+const OP_SIGN                     = { add: "+", sub: "–", tim: "·", div: ":" };
+const OP_NAME                     = { add: "Plus", sub: "Minus", tim: "Mal", div: "Geteilt" };
+
+const COUNTS = [20, 40, 60]         ;
+                                     
+
+const MAX_ROW = 25;
+const MAX_NUMBER = 100_000;
+const STORAGE_KEY = "rechnen.settings.v1";
+
+                    
+	            
+	             
+	                                                        
+	                    
+	                                                             
+	                     
+	             
+	                                                               
+	                  
+	                  
+	                                                        
+	                
+	                
+	                                     
+	               
+	                                          
+	                  
+	                       
+	             
+ 
+
+const DEFAULTS                     = {
+	types: ["add", "sub"],
+	mix: true,
+	complement: false,
+	commutative: false,
+	count: 40,
+	minResult: 20,
+	maxResult: 100,
+	minCalc: 4,
+	maxCalc: 17,
+	rows: [0, 1, 2, 4, 10],
+	maxFactor: 10,
+	showSolutions: false,
+	name: "",
+};
+
+                              
+
+/** x1 op x2 = r */
+                
+	                
+	                    
+	                    
+	                   
+	                     
+ 
+
+// ---------------------------------------------------------------- Zufall
+
+function randInt(min        , max        )         {
+	return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+/**
+ * Ganzzahl in [min, max]. bias > 1 bevorzugt größere Zahlen, bias < 1 kleinere.
+ */
+function biasedInt(min        , max        , bias        )         {
+	return min + Math.floor(Math.random() ** (1 / bias) * (max - min + 1));
+}
+
+function coin()          {
+	return Math.random() < 0.5;
+}
+
+function pick   (items              )    {
+	const item = items[randInt(0, items.length - 1)];
+	if (item === undefined) {
+		throw new Error("pick() auf leerer Liste");
+	}
+	return item;
+}
+
+function shuffle   (items     )      {
+	for (let i = items.length - 1; i > 0; i--) {
+		const j = randInt(0, i);
+		[items[i], items[j]] = [items[j]     , items[i]     ];
+	}
+	return items;
+}
+
+// ---------------------------------------------------------------- Aufgaben
+
+                 
+	          
+	          
+	                         
+	              
+ 
+
+function addParts(s          )        {
+	const total = biasedInt(s.minResult, s.maxResult, 3);
+	const b = biasedInt(Math.min(total, s.minCalc), Math.min(total, s.maxCalc), 1.7);
+	const a = total - b;
+	return s.commutative && coin() ? { a: b, b: a, total } : { a, b, total };
+}
+
+function timesParts(s          )        {
+	const row = pick(s.rows);
+	const other = randInt(0, s.maxFactor);
+	// Die Reihe steht hinten: 3 · 4 gehört zur Vierer-Reihe
+	return s.commutative && coin()
+		? { a: row, b: other, total: row * other }
+		: { a: other, b: row, total: row * other };
+}
+
+/** Wäre die Aufgabe mit der Lücke an dieser Stelle noch eindeutig lösbar? */
+function isUnique(op    , x1        , x2        , blank      )          {
+	if (op === "tim") {
+		// 0 · ___ = 0 hat beliebig viele Lösungen
+		return !(blank === "x1" && x2 === 0) && !(blank === "x2" && x1 === 0);
+	}
+	if (op === "div") {
+		// 0 : ___ = 0 ebenso
+		return !(blank === "x2" && x1 === 0);
+	}
+	return true;
+}
+
+function withBlank(op    , x1        , x2        , r        , s          )       {
+	const slots         = s.complement ? ["x1", "x2", "r"] : ["r"];
+	const blank = pick(slots.filter((slot) => isUnique(op, x1, x2, slot)));
+	return { op, x1, x2, r, blank };
+}
+
+function makeTask(op    , s          )       {
+	switch (op) {
+		case "add": {
+			const p = addParts(s);
+			return withBlank(op, p.a, p.b, p.total, s);
+		}
+		case "sub": {
+			const p = addParts(s);
+			return withBlank(op, p.total, p.b, p.a, s);
+		}
+		case "tim": {
+			const p = timesParts(s);
+			return withBlank(op, p.a, p.b, p.total, s);
+		}
+		case "div": {
+			let p = timesParts(s);
+			// Durch 0 wird nicht geteilt. Terminiert, weil check() eine Reihe ≠ 0 verlangt.
+			while (p.b === 0) {
+				p = timesParts(s);
+			}
+			return withBlank(op, p.total, p.b, p.a, s);
+		}
+	}
+}
+
+/** Fehlermeldung, falls sich mit diesen Einstellungen keine Aufgaben bilden lassen */
+function check(s          )                {
+	if (s.types.length === 0) {
+		return "Bitte mindestens eine Rechenart wählen.";
+	}
+	const needsRows = s.types.includes("tim") || s.types.includes("div");
+	if (needsRows && s.rows.length === 0) {
+		return "Bitte für Mal und Geteilt mindestens eine Reihe wählen.";
+	}
+	if (s.types.includes("div") && s.rows.every((row) => row === 0)) {
+		return "Durch 0 kann man nicht teilen. Bitte für Geteilt noch eine andere Reihe wählen.";
+	}
+	return null;
+}
+
+function generate(s          )         {
+	// gleichmäßig auf die Rechenarten verteilen, der Rest geht an die ersten
+	const base = Math.floor(s.count / s.types.length);
+	let rest = s.count % s.types.length;
+	const tasks         = [];
+	for (const op of s.types) {
+		const n = base + (rest > 0 ? 1 : 0);
+		rest--;
+		for (let i = 0; i < n; i++) {
+			tasks.push(makeTask(op, s));
+		}
+	}
+	return s.mix ? shuffle(tasks) : tasks;
+}
+
+// ---------------------------------------------------------------- Einstellungen prüfen und speichern
+
+function clamp(n        , min        , max        )         {
+	return Math.min(max, Math.max(min, n));
+}
+
+function toInt(v         , fallback        , min        , max        )         {
+	const n = typeof v === "string" ? Number.parseInt(v, 10) : v;
+	return typeof n === "number" && Number.isFinite(n) ? clamp(Math.round(n), min, max) : fallback;
+}
+
+function toBool(v         , fallback         )          {
+	return typeof v === "boolean" ? v : fallback;
+}
+
+function isCount(v         )             {
+	return COUNTS.some((c) => c === v);
+}
+
+/** Bereiche so korrigieren, dass max > min gilt (wie im PHP-Original) */
+function fixRanges(s          )           {
+	return {
+		...s,
+		maxResult: Math.max(s.maxResult, s.minResult + 1),
+		maxCalc: Math.max(s.maxCalc, s.minCalc + 1),
+	};
+}
+
+/** Beliebige Daten (z.B. aus dem localStorage) in gültige Einstellungen überführen */
+function toSettings(raw         )           {
+	if (typeof raw !== "object" || raw === null) {
+		return { ...DEFAULTS };
+	}
+	const o = raw                           ;
+	const types = Array.isArray(o.types) ? OPS.filter((op) => (o.types             ).includes(op)) : DEFAULTS.types;
+	const rows = Array.isArray(o.rows)
+		? o.rows.filter((r)              => Number.isInteger(r) && r >= 0 && r <= MAX_ROW)
+		: DEFAULTS.rows;
+	return fixRanges({
+		types,
+		mix: toBool(o.mix, DEFAULTS.mix),
+		complement: toBool(o.complement, DEFAULTS.complement),
+		commutative: toBool(o.commutative, DEFAULTS.commutative),
+		count: isCount(o.count) ? o.count : DEFAULTS.count,
+		minResult: toInt(o.minResult, DEFAULTS.minResult, 0, MAX_NUMBER),
+		maxResult: toInt(o.maxResult, DEFAULTS.maxResult, 1, MAX_NUMBER),
+		minCalc: toInt(o.minCalc, DEFAULTS.minCalc, 0, MAX_NUMBER),
+		maxCalc: toInt(o.maxCalc, DEFAULTS.maxCalc, 1, MAX_NUMBER),
+		rows: [...new Set(rows)].sort((a, b) => a - b),
+		maxFactor: toInt(o.maxFactor, DEFAULTS.maxFactor, 1, 100),
+		showSolutions: toBool(o.showSolutions, DEFAULTS.showSolutions),
+		name: typeof o.name === "string" ? o.name.slice(0, 40) : DEFAULTS.name,
+	});
+}
+
+function load()           {
+	try {
+		const json = localStorage.getItem(STORAGE_KEY);
+		return toSettings(json === null ? null : JSON.parse(json));
+	} catch {
+		return { ...DEFAULTS };
+	}
+}
+
+function save(s          )       {
+	try {
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+	} catch {
+		// privater Modus o.ä.: dann eben ohne Merken
+	}
+}
+
+/** Nur diese Felder beeinflussen die Aufgaben selbst; Lösungen und Name nicht */
+function taskKey(s          )         {
+	const { showSolutions: _solutions, name: _name, ...rest } = s;
+	return JSON.stringify(rest);
+}
+
+// ---------------------------------------------------------------- DOM
+
+function byId                       (id        , type             )    {
+	const el = document.getElementById(id);
+	if (!(el instanceof type)) {
+		throw new Error(`#${id} fehlt oder hat den falschen Typ`);
+	}
+	return el;
+}
+
+function el                                       (
+	tag   ,
+	className         ,
+	text         ,
+)                           {
+	const node = document.createElement(tag);
+	if (className !== undefined) node.className = className;
+	if (text !== undefined) node.textContent = text;
+	return node;
+}
+
+const form = byId("settings", HTMLFormElement);
+const rowsBox = byId("rows", HTMLDivElement);
+const tasksBox = byId("tasks", HTMLDivElement);
+const message = byId("message", HTMLParagraphElement);
+
+const numberFields = ["minResult", "maxResult", "minCalc", "maxCalc", "maxFactor"]         ;
+const flagFields = ["mix", "complement", "commutative", "showSolutions"]         ;
+
+function checkedValues(name        )           {
+	return [...form.querySelectorAll                  (`input[name="${name}"]:checked`)].map((i) => i.value);
+}
+
+function readForm()           {
+	const raw                          = {
+		types: checkedValues("type"),
+		rows: checkedValues("row").map(Number),
+		count: Number(checkedValues("count")[0]),
+		name: byId("name", HTMLInputElement).value,
+	};
+	for (const f of numberFields) raw[f] = byId(f, HTMLInputElement).value;
+	for (const f of flagFields) raw[f] = byId(f, HTMLInputElement).checked;
+	return toSettings(raw);
+}
+
+function writeForm(s          )       {
+	for (const input of form.querySelectorAll                  ('input[name="type"]')) {
+		input.checked = s.types.includes(input.value      );
+	}
+	for (const input of form.querySelectorAll                  ('input[name="row"]')) {
+		input.checked = s.rows.includes(Number(input.value));
+	}
+	for (const input of form.querySelectorAll                  ('input[name="count"]')) {
+		input.checked = Number(input.value) === s.count;
+	}
+	for (const f of numberFields) byId(f, HTMLInputElement).value = String(s[f]);
+	for (const f of flagFields) byId(f, HTMLInputElement).checked = s[f];
+	byId("name", HTMLInputElement).value = s.name;
+	updateVisibility(s);
+}
+
+function updateVisibility(s          )       {
+	byId("fsAddSub", HTMLFieldSetElement).hidden = !s.types.some((t) => t === "add" || t === "sub");
+	byId("fsTimDiv", HTMLFieldSetElement).hidden = !s.types.some((t) => t === "tim" || t === "div");
+}
+
+function buildRowChips()       {
+	for (let row = 0; row <= MAX_ROW; row++) {
+		const label = el("label", "chip chip-small");
+		const input = el("input");
+		input.type = "checkbox";
+		input.name = "row";
+		input.value = String(row);
+		input.id = `row${row}`;
+		label.append(input, el("span", undefined, String(row)));
+		rowsBox.append(label);
+	}
+}
+
+function cell(task      , slot      , showSolutions         )                  {
+	const value = task[slot];
+	const span = el("span", "num");
+	if (task.blank !== slot) {
+		span.textContent = String(value);
+		return span;
+	}
+	const blank = el("span", "blank");
+	if (showSolutions) {
+		blank.append(el("span", "solution", String(value)));
+	}
+	span.append(blank);
+	return span;
+}
+
+function renderTask(task      , showSolutions         )                 {
+	const row = el("div", "task");
+	row.append(
+		cell(task, "x1", showSolutions),
+		el("span", "op", OP_SIGN[task.op]),
+		cell(task, "x2", showSolutions),
+		el("span", "op", "="),
+		cell(task, "r", showSolutions),
+	);
+	return row;
+}
+
+function render(tasks                 , s          )       {
+	const half = Math.ceil(tasks.length / 2);
+	const columns = [tasks.slice(0, half), tasks.slice(half)].map((part) => {
+		const col = el("div", "col");
+		col.append(...part.map((t) => renderTask(t, s.showSolutions)));
+		return col;
+	});
+	tasksBox.replaceChildren(...columns);
+
+	byId("sheetName", HTMLSpanElement).textContent = s.name;
+	byId("sheetInfo", HTMLSpanElement).textContent =
+		`${tasks.length} Aufgaben · ${s.types.map((t) => OP_NAME[t]).join(", ")}`;
+	byId("scoreTotal", HTMLSpanElement).textContent = String(tasks.length);
+}
+
+// ---------------------------------------------------------------- Ablauf
+
+let settings = load();
+let tasks         = [];
+let key = "";
+
+function regenerate()       {
+	const error = check(settings);
+	message.textContent = error ?? "";
+	message.hidden = error === null;
+	if (error !== null) {
+		return;
+	}
+	tasks = generate(settings);
+	key = taskKey(settings);
+	render(tasks, settings);
+}
+
+function onChange()       {
+	const next = readForm();
+	settings = next;
+	save(settings);
+	// korrigierte Bereiche zurück ins Formular schreiben
+	writeForm(settings);
+	if (taskKey(settings) !== key || tasks.length === 0) {
+		regenerate();
+	} else {
+		render(tasks, settings);
+	}
+}
+
+buildRowChips();
+writeForm(settings);
+regenerate();
+
+// "Lösungen zeigen" sitzt über dem Blatt, also außerhalb des Formulars
+document.addEventListener("change", onChange);
+form.addEventListener("submit", (e) => {
+	e.preventDefault();
+	onChange();
+});
+byId("name", HTMLInputElement).addEventListener("input", () => {
+	settings = { ...settings, name: byId("name", HTMLInputElement).value.slice(0, 40) };
+	byId("sheetName", HTMLSpanElement).textContent = settings.name;
+	save(settings);
+});
+
+byId("btnNew", HTMLButtonElement).addEventListener("click", regenerate);
+byId("btnDefaults", HTMLButtonElement).addEventListener("click", () => {
+	settings = { ...DEFAULTS, name: settings.name };
+	save(settings);
+	writeForm(settings);
+	regenerate();
+});
+
+// In einem eingebetteten Frame (z.B. als Artifact) funktioniert window.print() nicht
+const printButton = byId("btnPrint", HTMLButtonElement);
+let framed = true;
+try {
+	framed = window.self !== window.top;
+} catch {
+	// Zugriff auf window.top verweigert: also eingebettet
+}
+printButton.hidden = framed;
+printButton.addEventListener("click", () => window.print());
+</script>

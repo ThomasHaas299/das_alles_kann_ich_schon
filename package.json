@@ -1,0 +1,12 @@
+{
+	"name": "rechnen",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"check": "tsc -p .",
+		"build": "npm run check && node build.mjs"
+	},
+	"devDependencies": {
+		"typescript": "^7.0.2"
+	}
+}
