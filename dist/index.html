@@ -454,9 +454,20 @@
 	}
 
 	.sheet-foot {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 0 16px;
 		margin-top: var(--sq);
 		line-height: var(--row);
 		color: var(--ink-soft);
+	}
+
+	/* Adresse der Seite, nur im Ausdruck */
+	.page-url {
+		display: none;
+		font-family: var(--font-ui);
+		font-size: 9pt;
 	}
 
 	.sheet-foot .write {
@@ -554,6 +565,10 @@
 		.tasks.three .col {
 			font-size: 14pt;
 		}
+
+		.page-url:not(:empty) {
+			display: inline;
+		}
 	}
 </style>
 </head>
@@ -638,7 +653,10 @@
 				<span id="sheetInfo"></span>
 			</div>
 			<div class="tasks" id="tasks"></div>
-			<div class="sheet-foot">Richtig: <span class="write"></span> von <span id="scoreTotal"></span></div>
+			<div class="sheet-foot">
+				<span>Richtig: <span class="write"></span> von <span id="scoreTotal"></span></span>
+				<span class="page-url" id="pageUrl"></span>
+			</div>
 		</main>
 
 		<footer class="site-foot">
@@ -1103,6 +1121,11 @@ byId("btnDefaults", HTMLButtonElement).addEventListener("click", () => {
 });
 
 byId("btnPrint", HTMLButtonElement).addEventListener("click", () => window.print());
+
+// Adresse für die Fußzeile im Ausdruck, z.B. https://www.heidihaas.de/rechnen/
+if (location.protocol === "http:" || location.protocol === "https:") {
+	byId("pageUrl", HTMLSpanElement).textContent = location.origin + location.pathname.replace(/index\.html$/, "");
+}
 </script>
 </body>
 </html>

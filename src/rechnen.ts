@@ -453,3 +453,8 @@ byId("btnDefaults", HTMLButtonElement).addEventListener("click", () => {
 });
 
 byId("btnPrint", HTMLButtonElement).addEventListener("click", () => window.print());
+
+// Adresse für die Fußzeile im Ausdruck, z.B. https://www.heidihaas.de/rechnen/
+if (location.protocol === "http:" || location.protocol === "https:") {
+	byId("pageUrl", HTMLSpanElement).textContent = location.origin + location.pathname.replace(/index\.html$/, "");
+}
