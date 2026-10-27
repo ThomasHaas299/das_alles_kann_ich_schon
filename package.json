@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"check": "tsc -p .",
-		"build": "npm run check && node build.mjs"
+		"build": "npm run check && node --disable-warning=ExperimentalWarning build.mjs"
 	},
 	"devDependencies": {
 		"typescript": "^7.0.2"
