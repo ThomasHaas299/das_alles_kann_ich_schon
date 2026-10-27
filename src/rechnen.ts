@@ -449,13 +449,4 @@ byId("btnDefaults", HTMLButtonElement).addEventListener("click", () => {
 	regenerate();
 });
 
-// In einem eingebetteten Frame (z.B. als Artifact) funktioniert window.print() nicht
-const printButton = byId("btnPrint", HTMLButtonElement);
-let framed = true;
-try {
-	framed = window.self !== window.top;
-} catch {
-	// Zugriff auf window.top verweigert: also eingebettet
-}
-printButton.hidden = framed;
-printButton.addEventListener("click", () => window.print());
+byId("btnPrint", HTMLButtonElement).addEventListener("click", () => window.print());
